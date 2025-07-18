@@ -2,7 +2,6 @@ import streamlit as st
 import os
 import openai
 
-# Load OpenAI API key from environment
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
 st.set_page_config(page_title="AI Storybook", page_icon="📖")
@@ -25,20 +24,17 @@ if st.button("Generate Story"):
         )
 
         try:
-            response = openai.ChatCompletion.create(
+            response = openai.chat.completions.create(
                 model="gpt-4",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.8,
                 max_tokens=1500
             )
-            story = response['choices'][0]['message']['content']
 
+            story = response.choices[0].message.content
             st.subheader("📝 Your Story:")
             st.write(story)
-
             st.download_button("📥 Download Story", story, file_name=f"{name}_story.txt")
 
         except Exception as e:
             st.error(f"Something went wrong: {e}")
-
-
